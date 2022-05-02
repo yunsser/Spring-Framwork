@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tjoeun.mapper.BoardMapper">
+
+	<!-- 글 새로 추가 -->
+    <insert id="addBoard" 
+    	parameterType="com.tjoeun.vo.BoardVO"
+    	useGeneratedKeys="true" keyProperty="num">
+    	INSERT INTO board VALUES(null, #{title}, #{author}, #{contents}, NOW())
+    </insert>
+    
+    <!-- 파일 업로드 -->
+    <insert id="addFileInfo"
+    	parameterType="map">
+    	INSERT INTO attach VALUES(null, #{board_num}, #{filename}, #{filesize})
+    </insert>
+    
+    <!-- 리스트 받기, Map<String,Object> -->
+    <select id="boardList" 
+    	resultType="map">
+    	SELECT * FROM board b LEFT OUTER JOIN attach a
+    	ON b.num=a.board_num
+    </select>
+    
+    <!-- 상세 글 가져오기 -->
+    <select id="getDetail" 
+    	resultType="map"
+    	parameterType="Integer">
+    	SELECT * FROM board b LEFT OUTER JOIN attach a
+    	ON b.num=a.board_num
+    	WHERE b.num=#{num}	
+    </select>
+    
+    <!--  -->
+    <select id="getFilename"
+    	parameterType="Integer"
+    	resultType="String">
+    	SELECT filename FROM attach WHERE att_num=#{num}
+    </select>
+    
+    <!-- 글삭제기능 -->
+    <delete id="delete" parameterType="Integer">
+		DELETE FROM board WHERE board_num=#{num}
+	</delete>
+
+	<!-- 첨부파일 삭제기능 -->
+	<delete id="deleteFileInfo" parameterType="Integer">
+		DELETE FROM attach WHERE att_num=#{num}
+	</delete>
+	
+	
+</mapper>
